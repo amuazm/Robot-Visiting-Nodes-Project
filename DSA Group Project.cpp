@@ -130,4 +130,5 @@ int main()
     //TODO:
     //make setPos take strings instead
     //make a loop for creating positions and put them into a vector
+    //lol
 }
