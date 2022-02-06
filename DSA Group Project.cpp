@@ -6,7 +6,6 @@
 using namespace std;
 
 #define MYMAX numeric_limits<int>::max()
-#define pass (void)0
 
 // trim from start (in place)
 static inline void ltrim(std::string& s) {
@@ -97,10 +96,11 @@ void printTasks(map<string, vector<string>>& tasks) {
 
 class Robot {
 public:
-    vector<string> visitHistory;
-    vector<string> inventory;
     map<string, map<string, int>> distances;
     map<string, vector<string>> tasks;
+
+    vector<string> visitHistory;
+    vector<string> inventory;
     string currentPos;
 
     Robot(map<string, map<string, int>>& d, map<string, vector<string>>& t) {
@@ -195,19 +195,18 @@ public:
         }
     }
 
+    void goHOME() {
+        cout << "Jobs done!\n";
+        if (currentPos != "HOME") {
+            cout << "Going back HOME.\n";
+            setPos("HOME");
+        }
+    }
+
     void nextPos() {
-        if (gotoClosestUnvisited()) {
-        }
-        else if (deliverClosestParcel()) {
-        }
-        else {
-            cout << "All positions have been visited and all parcels have been delivered.\n";
-            if (currentPos != "HOME") {
-                cout << "Going back HOME.\n";
-                setPos("HOME");
-            }
-            cout << "\n";
-        }
+        if (gotoClosestUnvisited());
+        else if (deliverClosestParcel());
+        else goHOME();
     }
 };
 
