@@ -101,7 +101,8 @@ public:
 
     vector<string> visitHistory;
     vector<string> inventory;
-    string currentPos;
+    string currentPos = "";
+    int distanceTravelled = 0;
 
     Robot(map<string, map<string, int>>& d, map<string, vector<string>>& t) {
         distances = d;
@@ -110,8 +111,24 @@ public:
     }
 
     void setPos(string s) {
+
+        //calculate distance travelled
+        if (currentPos != "") {
+            distanceTravelled += distances[currentPos][s];
+        }
+
         currentPos = s;
-        cout << "\nMoved to " << currentPos << "\n";
+
+        //add position to history
+        visitHistory.push_back(currentPos);
+        //print visit history
+        cout << "\nVisit History: ";
+        for (string i : visitHistory) {
+            cout << i << " | ";
+        }
+        cout << "\n";
+
+        cout << "Distance travelled: " << distanceTravelled << "\n";
 
         //task protocol
         //dropoff tasks
@@ -128,9 +145,9 @@ public:
         else {
             //add tasks into inventory and clear out tasks from position
             inventory.insert(inventory.end(), tasks[currentPos].begin(), tasks[currentPos].end());
-            cout << "Picked up parcels ";
+            cout << "Picked up parcels: ";
             for (string i : tasks[currentPos]) {
-                cout << i << " ";
+                cout << i << " | ";
             }
             cout << "\n";
             tasks[currentPos].clear();
@@ -138,16 +155,7 @@ public:
         //print inventory
         cout << "Inventory: ";
         for (string i : inventory) {
-            cout << i << " ";
-        }
-        cout << "\n";
-
-        //add position to history
-        visitHistory.push_back(currentPos);
-        //print visit history
-        cout << "Visit History: ";
-        for (string i : visitHistory) {
-            cout << i << " ";
+            cout << i << " | ";
         }
         cout << "\n";
 
@@ -166,7 +174,7 @@ public:
             }
         }
         if (closestUnvisited.first != "") {
-            cout << "Going to closest unvisited node.\n";
+            cout << "Going to closest unvisited position.\n";
             setPos(closestUnvisited.first);
             return true;
         }
