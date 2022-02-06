@@ -5,6 +5,9 @@
 #include <map>
 using namespace std;
 
+#define MYMAX numeric_limits<int>::max()
+#define pass (void)0
+
 // trim from start (in place)
 static inline void ltrim(std::string& s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
@@ -151,10 +154,10 @@ public:
         nextPos();
     }
 
-    void nextPos() {
+    bool gotoClosestUnvisited() {
         //find closest unvisited position
-        pair<string, int> closestUnvisited("", numeric_limits<int>::max());
-        for (auto elem : distances[currentPos]) {
+        pair<string, int> closestUnvisited("", MYMAX);
+        for (auto elem : distances[currentPos]) { //use the current position's distances map as a reference
             if (find(visitHistory.begin(), visitHistory.end(), elem.first) == visitHistory.end()) { //check if unvisited
                 if (elem.second < closestUnvisited.second) { //find the closest
                     closestUnvisited.first = elem.first;
@@ -162,25 +165,41 @@ public:
                 }
             }
         }
-
-        //goto closest unvisited position if any
-        if (closestUnvisited.second != numeric_limits<int>::max()) {
-            cout << "CLOSEST UNVISITED POSITION FROM WHERE I AM (" << currentPos << ") IS " << closestUnvisited.first << " WITH A DISTANCE OF " << closestUnvisited.second << "\n";
+        if (closestUnvisited.first != "") {
+            cout << "Going to closest unvisited node.\n";
             setPos(closestUnvisited.first);
+            return true;
         }
-        //if there is no unvisited position deliver closest parcel if any
-        else if (inventory.empty() == false) {
-            pair<string, int> closestParcel("", numeric_limits<int>::max());
+        else {
+            return false;
+        }
+    }
+
+    bool deliverClosestParcel() {
+        pair<string, int> closestParcelDelivery("", MYMAX);
+        if (inventory.empty() == false) {
             for (string parcelDestination : inventory) {
-                if (distances[currentPos][parcelDestination] < closestParcel.second) {
-                    closestParcel.first = parcelDestination;
-                    closestParcel.second = distances[currentPos][parcelDestination];
+                if (distances[currentPos][parcelDestination] < closestParcelDelivery.second) {
+                    closestParcelDelivery.first = parcelDestination;
+                    closestParcelDelivery.second = distances[currentPos][parcelDestination];
                 }
             }
-            cout << "CLOSEST UNDELIVERED PARCEL FROM WHERE I AM (" << currentPos << ") IS " << closestParcel.first << " WITH A DISTANCE OF " << closestParcel.second << "\n";
-            setPos(closestParcel.first);
         }
-        //go home if nothing else to do
+        if (closestParcelDelivery.first != "") {
+            cout << "Delivering closest parcel.\n";
+            setPos(closestParcelDelivery.first);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    void nextPos() {
+        if (gotoClosestUnvisited()) {
+        }
+        else if (deliverClosestParcel()) {
+        }
         else {
             cout << "All positions have been visited and all parcels have been delivered.\n";
             if (currentPos != "HOME") {
