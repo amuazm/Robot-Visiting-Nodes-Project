@@ -25,41 +25,49 @@ static inline void trim(std::string& s) {
     rtrim(s);
 }
 
-void readDistances(ifstream& fileDistances, map<string, map<string, int>>& positions) {
-    char s[256];
+void readDistances(map<string, map<string, int>>& distances) {
+    ifstream fileDistances("distances.txt");
+    while (fileDistances.peek() != EOF) {
+        char s[256];
 
-    fileDistances.get(s, 256, '-');
-    string s2(s);
-    trim(s2);
+        fileDistances.get(s, 256, '-');
+        string s2(s);
+        trim(s2);
 
-    fileDistances.ignore(1);
+        fileDistances.ignore(1);
 
-    fileDistances.get(s, 256, ':');
-    string s3(s);
-    trim(s3);
+        fileDistances.get(s, 256, ':');
+        string s3(s);
+        trim(s3);
 
-    fileDistances.ignore(1);
+        fileDistances.ignore(1);
 
-    fileDistances.get(s, 256);
-    int i = atoi(s);
+        fileDistances.get(s, 256);
+        int i = atoi(s);
 
-    positions[s2][s3] = i;
+        distances[s2][s3] = i;
+    }
+    fileDistances.close();
 }
 
-void readTasks(ifstream& fileTasks, map<string, vector<string>>& tasks) {
-    char s[256];
+void readTasks(map<string, vector<string>>& tasks) {
+    ifstream fileTasks("tasks.txt");
+    while (fileTasks.peek() != EOF) {
+        char s[256];
 
-    fileTasks.get(s, 256, '-');
-    string s2(s);
-    trim(s2);
+        fileTasks.get(s, 256, '-');
+        string s2(s);
+        trim(s2);
 
-    fileTasks.ignore(1);
+        fileTasks.ignore(1);
 
-    fileTasks.get(s, 256);
-    string s3(s);
-    trim(s3);
+        fileTasks.get(s, 256);
+        string s3(s);
+        trim(s3);
 
-    tasks[s2].push_back(s3);
+        tasks[s2].push_back(s3);
+    }
+    fileTasks.close();
 }
 
 void printDistances(map<string, map<string, int>>& distances) {
@@ -149,21 +157,11 @@ public:
 
 int main()
 {
-	ifstream fileDistances("distances.txt");
-    ifstream fileTasks("tasks.txt");
-
     map<string, map<string, int>> distances;
     map<string, vector<string>> tasks;
 
-    while (fileDistances.peek() != EOF) {
-        readDistances(fileDistances, distances);
-    }
-    fileDistances.close();
-
-    while (fileTasks.peek() != EOF) {
-        readTasks(fileTasks, tasks);
-    }
-    fileTasks.close();
+    readDistances(distances);
+    readTasks(tasks);
 
     Robot myRobot(distances, tasks);
     myRobot.setPos("HOME");
