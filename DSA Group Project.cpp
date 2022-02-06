@@ -25,47 +25,79 @@ static inline void trim(std::string& s) {
     rtrim(s);
 }
 
-void readidiot(ifstream& distances, map<string, map<string, int>>& positions) {
+void readidiot(ifstream& fileDistances, map<string, map<string, int>>& positions) {
     char s[256];
 
-    distances.get(s, 256, '-');
+    fileDistances.get(s, 256, '-');
     string s2(s);
     trim(s2);
 
-    distances.ignore(1);
+    fileDistances.ignore(1);
 
-    distances.get(s, 256, ':');
+    fileDistances.get(s, 256, ':');
     string s3(s);
     trim(s3);
 
-    distances.ignore(1);
+    fileDistances.ignore(1);
 
-    distances.get(s, 256);
+    fileDistances.get(s, 256);
     int i = atoi(s);
 
     positions[s2][s3] = i;
 }
 
+void readDistances(ifstream& fileTasks, map<string, vector<string>>& tasks) {
+    char s[256];
+
+    fileTasks.get(s, 256, '-');
+    string s2(s);
+    trim(s2);
+
+    fileTasks.ignore(1);
+
+    fileTasks.get(s, 256);
+    string s3(s);
+    trim(s3);
+
+    tasks[s2].push_back(s3);
+}
+
 int main()
 {
-	ifstream distances("distances.txt");
+	ifstream fileDistances("distances.txt");
 
     map<string, map<string, int>> positions;
 
-    while (distances.peek() != EOF) {
-        readidiot(distances, positions);
+    while (fileDistances.peek() != EOF) {
+        readidiot(fileDistances, positions);
     }
-
-    //pDistances.push_back(map<string, int> = { {s3, i} });
-    //positions.insert(pair<string, map>(s2, ));
 
     for (auto elem : positions) {
         cout << elem.first << ": ";
         for (auto elem2 : elem.second) {
-            cout << elem2.first << elem2.second;
+            cout << elem2.first << elem2.second << " ";
         }
         cout << "\n";
     }
 
-	distances.close();
+	fileDistances.close();
+
+    cout << "\n\n\n";
+    ifstream fileTasks("tasks.txt");
+
+    map<string, vector<string>> tasks;
+
+    while (fileTasks.peek() != EOF) {
+        readDistances(fileTasks, tasks);
+    }
+
+    for (auto elem : tasks) {
+        cout << elem.first << ": ";
+        for (string s : elem.second) {
+            cout << s << " ";
+        }
+        cout << "\n";
+    }
+
+    fileTasks.close();
 }
