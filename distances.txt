@@ -1,0 +1,16 @@
+HOME - A : 6
+HOME - B : 8
+HOME - C : 5
+HOME - D : 10
+A - HOME : 6
+A - B : 4
+A - C : 7
+A - D : 8
+B - HOME : 8
+B - A : 4
+B - C : 6
+B - D : 3
+C - HOME : 5
+C - A : 7
+C - B : 6
+C - D : 7
