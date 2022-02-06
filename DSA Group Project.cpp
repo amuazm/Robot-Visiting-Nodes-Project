@@ -62,6 +62,28 @@ void readTasks(ifstream& fileTasks, map<string, vector<string>>& tasks) {
     tasks[s2].push_back(s3);
 }
 
+void printDistances(map<string, map<string, int>>& distances) {
+    cout << "distances:\n";
+    for (auto elem : distances) {
+        cout << elem.first << ": ";
+        for (auto elem2 : elem.second) {
+            cout << elem2.first << elem2.second << " ";
+        }
+        cout << "\n";
+    }
+}
+
+void printTasks(map<string, vector<string>>& tasks) {
+    cout << "tasks:\n";
+    for (auto elem : tasks) {
+        cout << elem.first << ": ";
+        for (string s : elem.second) {
+            cout << s << " ";
+        }
+        cout << "\n";
+    }
+}
+
 int main()
 {
 	ifstream fileDistances("distances.txt");
@@ -79,22 +101,4 @@ int main()
         readTasks(fileTasks, tasks);
     }
     fileTasks.close();
-
-    ////print out positions and tasks map
-    //cout << "distances:\n";
-    //for (auto elem : distances) {
-    //    cout << elem.first << ": ";
-    //    for (auto elem2 : elem.second) {
-    //        cout << elem2.first << elem2.second << " ";
-    //    }
-    //    cout << "\n";
-    //}
-    //cout << "tasks:\n";
-    //for (auto elem : tasks) {
-    //    cout << elem.first << ": ";
-    //    for (string s : elem.second) {
-    //        cout << s << " ";
-    //    }
-    //    cout << "\n";
-    //}
 }
