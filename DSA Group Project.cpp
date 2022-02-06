@@ -84,6 +84,69 @@ void printTasks(map<string, vector<string>>& tasks) {
     }
 }
 
+class Robot {
+public:
+    vector<string> visitHistory;
+    vector<string> inventory;
+    map<string, map<string, int>> distances;
+    map<string, vector<string>> tasks;
+
+    Robot(map<string, map<string, int>>& d, map<string, vector<string>>& t) {
+        distances = d;
+        tasks = t;
+        cout << "Robot created.\n";
+    }
+
+    void setPos(string currentPos) {
+        cout << "\nMoved to " << currentPos << "\n";
+
+        //task protocol
+        //dropoff tasks
+        vector<string>::iterator it = find(inventory.begin(), inventory.end(), currentPos);
+        while (it != inventory.end()) {
+            cout << "Dropping off one parcel...\n";
+            inventory.erase(it);
+            it = find(inventory.begin(), inventory.end(), currentPos);
+        }
+        //pickup tasks
+        if (tasks[currentPos].empty()) {
+            cout << "Picked up no tasks.\n";
+        }
+        else {
+            //if there are tasks
+            //pick up tasks
+            inventory.insert(inventory.end(), tasks[currentPos].begin(), tasks[currentPos].end());
+            cout << "Picked up parcels ";
+            for (string i : tasks[currentPos]) {
+                cout << i << " ";
+            }
+            cout << "\n";
+            //remove all tasks from position
+            tasks[currentPos].clear();
+        }
+        //print inventory
+        cout << "Inventory: ";
+        for (string i : inventory) {
+            cout << i << " ";
+        }
+        cout << "\n";
+
+
+        //add position to history
+        visitHistory.push_back(currentPos);
+        //print visit history
+        cout << "Visit History: ";
+        for (string i : visitHistory) {
+            cout << i << " ";
+        }
+        cout << "\n";
+    }
+
+    void nextPos() {
+
+    }
+};
+
 int main()
 {
 	ifstream fileDistances("distances.txt");
@@ -101,4 +164,12 @@ int main()
         readTasks(fileTasks, tasks);
     }
     fileTasks.close();
+
+    Robot myRobot(distances, tasks);
+    myRobot.setPos("HOME");
+    myRobot.setPos("A");
+    myRobot.setPos("B");
+    myRobot.setPos("C");
+    myRobot.setPos("D");
+    myRobot.setPos("HOME");
 }
