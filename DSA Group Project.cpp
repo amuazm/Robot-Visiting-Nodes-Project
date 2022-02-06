@@ -98,6 +98,7 @@ public:
     vector<string> inventory;
     map<string, map<string, int>> distances;
     map<string, vector<string>> tasks;
+    string currentPos;
 
     Robot(map<string, map<string, int>>& d, map<string, vector<string>>& t) {
         distances = d;
@@ -105,7 +106,8 @@ public:
         cout << "Robot created.\n";
     }
 
-    void setPos(string currentPos) {
+    void setPos(string s) {
+        currentPos = s;
         cout << "\nMoved to " << currentPos << "\n";
 
         //task protocol
@@ -121,15 +123,13 @@ public:
             cout << "Picked up no tasks.\n";
         }
         else {
-            //if there are tasks
-            //pick up tasks
+            //add tasks into inventory and clear out tasks from position
             inventory.insert(inventory.end(), tasks[currentPos].begin(), tasks[currentPos].end());
             cout << "Picked up parcels ";
             for (string i : tasks[currentPos]) {
                 cout << i << " ";
             }
             cout << "\n";
-            //remove all tasks from position
             tasks[currentPos].clear();
         }
         //print inventory
@@ -139,7 +139,6 @@ public:
         }
         cout << "\n";
 
-
         //add position to history
         visitHistory.push_back(currentPos);
         //print visit history
@@ -148,10 +147,48 @@ public:
             cout << i << " ";
         }
         cout << "\n";
+
+        nextPos();
     }
 
     void nextPos() {
+        //find closest unvisited position
+        pair<string, int> closestUnvisited("", numeric_limits<int>::max());
+        for (auto elem : distances[currentPos]) {
+            if (find(visitHistory.begin(), visitHistory.end(), elem.first) == visitHistory.end()) { //check if unvisited
+                if (elem.second < closestUnvisited.second) { //find the closest
+                    closestUnvisited.first = elem.first;
+                    closestUnvisited.second = elem.second;
+                }
+            }
+        }
 
+        //goto closest unvisited position if any
+        if (closestUnvisited.second != numeric_limits<int>::max()) {
+            cout << "CLOSEST UNVISITED POSITION FROM WHERE I AM (" << currentPos << ") IS " << closestUnvisited.first << " WITH A DISTANCE OF " << closestUnvisited.second << "\n";
+            setPos(closestUnvisited.first);
+        }
+        //if there is no unvisited position deliver closest parcel if any
+        else if (inventory.empty() == false) {
+            pair<string, int> closestParcel("", numeric_limits<int>::max());
+            for (string parcelDestination : inventory) {
+                if (distances[currentPos][parcelDestination] < closestParcel.second) {
+                    closestParcel.first = parcelDestination;
+                    closestParcel.second = distances[currentPos][parcelDestination];
+                }
+            }
+            cout << "CLOSEST UNDELIVERED PARCEL FROM WHERE I AM (" << currentPos << ") IS " << closestParcel.first << " WITH A DISTANCE OF " << closestParcel.second << "\n";
+            setPos(closestParcel.first);
+        }
+        //go home if nothing else to do
+        else {
+            cout << "All positions have been visited and all parcels have been delivered.\n";
+            if (currentPos != "HOME") {
+                cout << "Going back HOME.\n";
+                setPos("HOME");
+            }
+            cout << "\n";
+        }
     }
 };
 
@@ -164,10 +201,5 @@ int main()
     readTasks(tasks);
 
     Robot myRobot(distances, tasks);
-    myRobot.setPos("HOME");
-    myRobot.setPos("A");
-    myRobot.setPos("B");
-    myRobot.setPos("C");
-    myRobot.setPos("D");
     myRobot.setPos("HOME");
 }
