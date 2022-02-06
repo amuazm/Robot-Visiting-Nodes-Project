@@ -25,7 +25,7 @@ static inline void trim(std::string& s) {
     rtrim(s);
 }
 
-void readidiot(ifstream& fileDistances, map<string, map<string, int>>& positions) {
+void readDistances(ifstream& fileDistances, map<string, map<string, int>>& positions) {
     char s[256];
 
     fileDistances.get(s, 256, '-');
@@ -46,7 +46,7 @@ void readidiot(ifstream& fileDistances, map<string, map<string, int>>& positions
     positions[s2][s3] = i;
 }
 
-void readDistances(ifstream& fileTasks, map<string, vector<string>>& tasks) {
+void readTasks(ifstream& fileTasks, map<string, vector<string>>& tasks) {
     char s[256];
 
     fileTasks.get(s, 256, '-');
@@ -65,39 +65,36 @@ void readDistances(ifstream& fileTasks, map<string, vector<string>>& tasks) {
 int main()
 {
 	ifstream fileDistances("distances.txt");
-
-    map<string, map<string, int>> positions;
-
-    while (fileDistances.peek() != EOF) {
-        readidiot(fileDistances, positions);
-    }
-
-    for (auto elem : positions) {
-        cout << elem.first << ": ";
-        for (auto elem2 : elem.second) {
-            cout << elem2.first << elem2.second << " ";
-        }
-        cout << "\n";
-    }
-
-	fileDistances.close();
-
-    cout << "\n\n\n";
     ifstream fileTasks("tasks.txt");
 
+    map<string, map<string, int>> distances;
     map<string, vector<string>> tasks;
 
+    while (fileDistances.peek() != EOF) {
+        readDistances(fileDistances, distances);
+    }
+    fileDistances.close();
+
     while (fileTasks.peek() != EOF) {
-        readDistances(fileTasks, tasks);
+        readTasks(fileTasks, tasks);
     }
-
-    for (auto elem : tasks) {
-        cout << elem.first << ": ";
-        for (string s : elem.second) {
-            cout << s << " ";
-        }
-        cout << "\n";
-    }
-
     fileTasks.close();
+
+    ////print out positions and tasks map
+    //cout << "distances:\n";
+    //for (auto elem : distances) {
+    //    cout << elem.first << ": ";
+    //    for (auto elem2 : elem.second) {
+    //        cout << elem2.first << elem2.second << " ";
+    //    }
+    //    cout << "\n";
+    //}
+    //cout << "tasks:\n";
+    //for (auto elem : tasks) {
+    //    cout << elem.first << ": ";
+    //    for (string s : elem.second) {
+    //        cout << s << " ";
+    //    }
+    //    cout << "\n";
+    //}
 }
