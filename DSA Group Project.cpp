@@ -7,14 +7,17 @@ using namespace std;
 
 #define MYMAX numeric_limits<int>::max()
 
+map<string, map<string, int>> distances;
+map<string, vector<string>> tasks;
+
 //trim from start
 void ltrim(string& s) {
-    s.erase(s.begin(), find_if(s.begin(), s.end(), [](unsigned char ch) {return !isspace(ch);}));
+    s.erase(s.begin(), find_if(s.begin(), s.end(), [](unsigned char ch) {return !isspace(ch); }));
 }
 
 //trim from end
 void rtrim(string& s) {
-    s.erase(find_if(s.rbegin(), s.rend(), [](unsigned char ch) {return !isspace(ch);}).base(), s.end());
+    s.erase(find_if(s.rbegin(), s.rend(), [](unsigned char ch) {return !isspace(ch); }).base(), s.end());
 }
 
 //trim from both ends
@@ -24,7 +27,7 @@ void trim(string& s) {
 }
 
 //reads position distances from distances.txt and stores them into the distances map
-void readDistances(map<string, map<string, int>>& distances) {
+void readDistances() {
     ifstream fileDistances("distances.txt");
     while (fileDistances.peek() != EOF) {
         char s[256];
@@ -50,7 +53,7 @@ void readDistances(map<string, map<string, int>>& distances) {
 }
 
 //reads tasks from tasks.txt and stores them into the tasks map
-void readTasks(map<string, vector<string>>& tasks) {
+void readTasks() {
     ifstream fileTasks("tasks.txt");
     while (fileTasks.peek() != EOF) {
         char s[256];
@@ -71,8 +74,8 @@ void readTasks(map<string, vector<string>>& tasks) {
 }
 
 //prints out the distances map for testing purposes
-void printDistances(map<string, map<string, int>>& distances) {
-    cout << "distances:\n";
+void printDistances() {
+    cout << "\ndistances:\n";
     for (auto elem : distances) {
         cout << elem.first << ": ";
         for (auto elem2 : elem.second) {
@@ -83,7 +86,7 @@ void printDistances(map<string, map<string, int>>& distances) {
 }
 
 //prints out the tasks map for testing purposes
-void printTasks(map<string, vector<string>>& tasks) {
+void printTasks() {
     cout << "tasks:\n";
     for (auto elem : tasks) {
         cout << elem.first << ": ";
@@ -96,18 +99,13 @@ void printTasks(map<string, vector<string>>& tasks) {
 
 class Robot {
 public:
-    map<string, map<string, int>> distances;
-    map<string, vector<string>> tasks;
-
     vector<string> visitHistory;
     vector<string> inventory;
     string currentPos = "";
     int totalDistanceTravelled = 0;
 
     //require distances and tasks maps when creating object
-    Robot(map<string, map<string, int>>& d, map<string, vector<string>>& t) {
-        distances = d;
-        tasks = t;
+    Robot() {
         cout << "Robot created.\n";
     }
 
@@ -118,10 +116,10 @@ public:
         //calculate distance travelled
         if (currentPos != "") {
             totalDistanceTravelled += distances[currentPos][s];
+            cout << "\nDistance: " << distances[currentPos][s] << "\n";
         }
-        cout << "\nDistance: " << distances[currentPos][s] << "\n";
         cout << "Total Distance travelled: " << totalDistanceTravelled << "\n";
-        
+
         currentPos = s;
 
         //add position to history
@@ -229,19 +227,14 @@ public:
             setPos("HOME");
         }
     }
-
-    
 };
 
 int main()
 {
-    map<string, map<string, int>> distances;
-    map<string, vector<string>> tasks;
+    readDistances();
+    readTasks();
 
-    readDistances(distances);
-    readTasks(tasks);
-
-    Robot myRobot(distances, tasks);
+    Robot myRobot;
     myRobot.setPos("HOME");
 
     //for use of executable
