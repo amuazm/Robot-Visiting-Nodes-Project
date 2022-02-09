@@ -7,21 +7,21 @@ using namespace std;
 
 #define MYMAX numeric_limits<int>::max()
 
-//trim from start (in place)
+//trim from start
 static inline void ltrim(string& s) {
     s.erase(s.begin(), find_if(s.begin(), s.end(), [](unsigned char ch) {
         return !isspace(ch);
         }));
 }
 
-//trim from end (in place)
+//trim from end
 static inline void rtrim(string& s) {
     s.erase(find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
         return !isspace(ch);
         }).base(), s.end());
 }
 
-//trim from both ends (in place)
+//trim from both ends
 static inline void trim(string& s) {
     ltrim(s);
     rtrim(s);
@@ -108,12 +108,15 @@ public:
     string currentPos = "";
     int distanceTravelled = 0;
 
+    //require distances and tasks maps when creating object
     Robot(map<string, map<string, int>>& d, map<string, vector<string>>& t) {
         distances = d;
         tasks = t;
         cout << "Robot created.\n";
     }
 
+    //sets position of robot and helps track current situation
+    //at the end, immediately moves on to next position
     void setPos(string s) {
 
         //calculate distance travelled
@@ -166,6 +169,17 @@ public:
         nextPos();
     }
 
+    //PATH FUNCTIONS
+    //protocol for finding which position to go to next
+    void nextPos() {
+        if (gotoClosestUnvisited());
+        else if (deliverClosestParcel());
+        else goHOME();
+    }
+
+    //finds the closest unvisited position
+    //if found - moves robot to said position and returns true
+    //if not found - returns false
     bool gotoClosestUnvisited() {
         //find closest unvisited position
         pair<string, int> closestUnvisited("", MYMAX);
@@ -187,6 +201,9 @@ public:
         }
     }
 
+    //checks inventory's parcels' destinations and finds the closest position to deliver to
+    //if found - moves robot to said position and returns true
+    //if not found - returns false
     bool deliverClosestParcel() {
         pair<string, int> closestParcelDelivery("", MYMAX);
         if (inventory.empty() == false) {
@@ -207,6 +224,7 @@ public:
         }
     }
 
+    //moves the robot back home if not already at home
     void goHOME() {
         cout << "Jobs done!\n";
         if (currentPos != "HOME") {
@@ -215,11 +233,7 @@ public:
         }
     }
 
-    void nextPos() {
-        if (gotoClosestUnvisited());
-        else if (deliverClosestParcel());
-        else goHOME();
-    }
+    
 };
 
 int main()
