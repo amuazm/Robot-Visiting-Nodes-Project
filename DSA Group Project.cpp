@@ -8,21 +8,17 @@ using namespace std;
 #define MYMAX numeric_limits<int>::max()
 
 //trim from start
-static inline void ltrim(string& s) {
-    s.erase(s.begin(), find_if(s.begin(), s.end(), [](unsigned char ch) {
-        return !isspace(ch);
-        }));
+void ltrim(string& s) {
+    s.erase(s.begin(), find_if(s.begin(), s.end(), [](unsigned char ch) {return !isspace(ch);}));
 }
 
 //trim from end
-static inline void rtrim(string& s) {
-    s.erase(find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
-        return !isspace(ch);
-        }).base(), s.end());
+void rtrim(string& s) {
+    s.erase(find_if(s.rbegin(), s.rend(), [](unsigned char ch) {return !isspace(ch);}).base(), s.end());
 }
 
 //trim from both ends
-static inline void trim(string& s) {
+void trim(string& s) {
     ltrim(s);
     rtrim(s);
 }
@@ -106,7 +102,7 @@ public:
     vector<string> visitHistory;
     vector<string> inventory;
     string currentPos = "";
-    int distanceTravelled = 0;
+    int totalDistanceTravelled = 0;
 
     //require distances and tasks maps when creating object
     Robot(map<string, map<string, int>>& d, map<string, vector<string>>& t) {
@@ -121,21 +117,21 @@ public:
 
         //calculate distance travelled
         if (currentPos != "") {
-            distanceTravelled += distances[currentPos][s];
+            totalDistanceTravelled += distances[currentPos][s];
         }
-
+        cout << "\nDistance: " << distances[currentPos][s] << "\n";
+        cout << "Total Distance travelled: " << totalDistanceTravelled << "\n";
+        
         currentPos = s;
 
         //add position to history
         visitHistory.push_back(currentPos);
         //print visit history
-        cout << "\nVisit History: ";
+        cout << "Visit History: ";
         for (string i : visitHistory) {
             cout << i << " | ";
         }
         cout << "\n";
-
-        cout << "Distance travelled: " << distanceTravelled << "\n";
 
         //task protocol
         //dropoff tasks
@@ -247,8 +243,9 @@ int main()
     Robot myRobot(distances, tasks);
     myRobot.setPos("HOME");
 
-    for (string i = ""; i != "1";) {
-        cout << "\nTo exit, please enter 1: ";
-        cin >> i;
+    //for use of executable
+    for (string s = ""; s != "1";) {
+        cout << "\nTo finish, please enter 1: ";
+        cin >> s;
     }
 }
