@@ -128,18 +128,19 @@ public:
         visitHistory.push_back(currentPos);
         //print visit history
         cout << "Visit History: ";
-        for (string i : visitHistory) {
-            cout << i << " | ";
+        for (string s : visitHistory) {
+            cout << s << " | ";
         }
         cout << "\n";
 
         //task protocol
         //dropoff tasks
-        vector<string>::iterator it = find(inventory.begin(), inventory.end(), currentPos);
-        while (it != inventory.end()) {
+        for (auto it = find(inventory.begin(), inventory.end(), currentPos);
+            it != inventory.end();
+            it = find(inventory.begin(), inventory.end(), currentPos))
+        {
             cout << "Dropping off one parcel...\n";
             inventory.erase(it);
-            it = find(inventory.begin(), inventory.end(), currentPos);
         }
         //pickup tasks
         if (tasks[currentPos].empty()) {
@@ -149,16 +150,16 @@ public:
             //add tasks into inventory and clear out tasks from position
             inventory.insert(inventory.end(), tasks[currentPos].begin(), tasks[currentPos].end());
             cout << "Picked up parcels: ";
-            for (string i : tasks[currentPos]) {
-                cout << i << " | ";
+            for (string s : tasks[currentPos]) {
+                cout << s << " | ";
             }
             cout << "\n";
             tasks[currentPos].clear();
         }
         //print inventory
         cout << "Inventory: ";
-        for (string i : inventory) {
-            cout << i << " | ";
+        for (string s : inventory) {
+            cout << s << " | ";
         }
         cout << "\n";
 
