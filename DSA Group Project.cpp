@@ -7,26 +7,27 @@ using namespace std;
 
 #define MYMAX numeric_limits<int>::max()
 
-// trim from start (in place)
+//trim from start (in place)
 static inline void ltrim(string& s) {
     s.erase(s.begin(), find_if(s.begin(), s.end(), [](unsigned char ch) {
         return !isspace(ch);
         }));
 }
 
-// trim from end (in place)
+//trim from end (in place)
 static inline void rtrim(string& s) {
     s.erase(find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
         return !isspace(ch);
         }).base(), s.end());
 }
 
-// trim from both ends (in place)
+//trim from both ends (in place)
 static inline void trim(string& s) {
     ltrim(s);
     rtrim(s);
 }
 
+//reads position distances from distances.txt and stores them into the distances map
 void readDistances(map<string, map<string, int>>& distances) {
     ifstream fileDistances("distances.txt");
     while (fileDistances.peek() != EOF) {
@@ -52,6 +53,7 @@ void readDistances(map<string, map<string, int>>& distances) {
     fileDistances.close();
 }
 
+//reads tasks from tasks.txt and stores them into the tasks map
 void readTasks(map<string, vector<string>>& tasks) {
     ifstream fileTasks("tasks.txt");
     while (fileTasks.peek() != EOF) {
@@ -72,6 +74,7 @@ void readTasks(map<string, vector<string>>& tasks) {
     fileTasks.close();
 }
 
+//prints out the distances map for testing purposes
 void printDistances(map<string, map<string, int>>& distances) {
     cout << "distances:\n";
     for (auto elem : distances) {
@@ -83,6 +86,7 @@ void printDistances(map<string, map<string, int>>& distances) {
     }
 }
 
+//prints out the tasks map for testing purposes
 void printTasks(map<string, vector<string>>& tasks) {
     cout << "tasks:\n";
     for (auto elem : tasks) {
