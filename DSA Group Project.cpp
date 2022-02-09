@@ -247,7 +247,7 @@ int main()
     Robot myRobot(distances, tasks);
     myRobot.setPos("HOME");
 
-    for (int i = 0; i != 1;) {
+    for (string i = ""; i != "1";) {
         cout << "\nTo exit, please enter 1: ";
         cin >> i;
     }
